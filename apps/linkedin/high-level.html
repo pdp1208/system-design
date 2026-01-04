@@ -1,1 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn - High Level Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .navbar {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar a {
+            color: #1a1a1a;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar a:hover {
+            opacity: 0.6;
+        }
+
+        .navbar h1 {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-section {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-section h2 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .design-content {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 40px;
+        }
+
+        .design-content h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+            font-weight: 600;
+            font-size: 1.4em;
+        }
+
+        .design-content h4 {
+            color: #1a1a1a;
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .design-content section {
+            margin-bottom: 40px;
+        }
+
+        .design-content p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .design-content ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .design-content li {
+            margin-bottom: 8px;
+        }
+
+        .metric-box {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .metric-box strong {
+            color: #1a1a1a;
+        }
+
+        .diagram-box {
+            background: #fafafa;
+            border: 2px solid #e5e5e5;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .component-box {
+            background: white;
+            border: 2px solid #1a1a1a;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 6px;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #666;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../../index.html">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Hub
+        </a>
+        <h1>LinkedIn - High Level Design</h1>
+        <div></div>
+    </nav>
+
+    <div class="content">
+        <div class="header-section">
+            <h2>High Level System Design</h2>
+            <p>Strategic overview of LinkedIn's system design focusing on scalability, performance, and architecture decisions.</p>
+        </div>
+
+        <div class="design-content">
+            <section>
+                <h3>System Requirements</h3>
+                
+                <h4>Functional Requirements</h4>
+                <ul>
+                    <li>User registration and authentication</li>
+                    <li>Profile creation and management (work experience, education, skills)</li>
+                    <li>Connection management (send/accept/decline requests)</li>
+                    <li>Post creation, editing, and deletion</li>
+                    <li>News feed with personalized content</li>
+                    <li>Like, comment, and share functionality</li>
+                    <li>Real-time messaging between connections</li>
+                    <li>Job postings and applications</li>
+                    <li>Search functionality (people, jobs, posts, companies)</li>
+                    <li>Notifications (in-app, email, push)</li>
+                    <li>Company pages and following</li>
+                    <li>Groups and communities</li>
+                </ul>
+
+                <h4>Non-Functional Requirements</h4>
+                <ul>
+                    <li><strong>Scalability:</strong> Support 900M+ users, 58M+ companies</li>
+                    <li><strong>Performance:</strong> Feed load time under 2 seconds, message delivery under 500ms</li>
+                    <li><strong>Availability:</strong> 99.99% uptime (less than 1 hour downtime per year)</li>
+                    <li><strong>Consistency:</strong> Eventual consistency for feed, strong consistency for financial transactions</li>
+                    <li><strong>Reliability:</strong> No data loss, automated backups</li>
+                    <li><strong>Security:</strong> End-to-end encryption, GDPR compliance</li>
+                    <li><strong>Low Latency:</strong> Response time under 200ms for most operations</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Capacity Estimation</h3>
+                
+                <div class="metric-box">
+                    <strong>User Base:</strong> 900 million users<br>
+                    <strong>Daily Active Users (DAU):</strong> ~300 million (33% of total users)<br>
+                    <strong>Average session duration:</strong> 20 minutes<br>
+                    <strong>Posts per day:</strong> ~2 million posts<br>
+                    <strong>Messages per day:</strong> ~100 million messages
+                </div>
+
+                <h4>Storage Estimation</h4>
+                <ul>
+                    <li><strong>User Data:</strong> 900M users × 10 KB = 9 TB</li>
+                    <li><strong>Posts:</strong> 2M posts/day × 1 KB × 365 days × 5 years = 3.65 TB</li>
+                    <li><strong>Media (Images/Videos):</strong> Assuming 30% posts have media, avg 500 KB: 2M × 0.3 × 500 KB × 365 × 5 = 550 TB</li>
+                    <li><strong>Messages:</strong> 100M messages/day × 0.5 KB × 365 × 2 years = 36.5 TB</li>
+                    <li><strong>Total Storage:</strong> ~600 TB (with replication: 1.8 PB)</li>
+                </ul>
+
+                <h4>Bandwidth Estimation</h4>
+                <ul>
+                    <li><strong>Incoming (Writes):</strong> 2M posts + 100M messages = 102M writes/day = 1,180 writes/second</li>
+                    <li><strong>Outgoing (Reads):</strong> 300M DAU × 50 feed items = 15B reads/day = 173,000 reads/second</li>
+                    <li><strong>Read:Write Ratio:</strong> ~150:1 (heavily read-intensive)</li>
+                </ul>
+
+                <h4>Server Estimation</h4>
+                <ul>
+                    <li><strong>Assuming 10,000 requests/second per server</strong></li>
+                    <li><strong>Peak load:</strong> 173,000 reads/sec + 1,180 writes/sec = 174,180 req/sec</li>
+                    <li><strong>Required servers:</strong> 174,180 / 10,000 ≈ 18 servers (with buffer: 25-30 servers)</li>
+                    <li><strong>With auto-scaling:</strong> 30-100 servers during peak hours</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>High Level Architecture Diagram</h3>
+                
+                <div class="diagram-box">
+                    <div class="component-box">
+                        <strong>CLIENT</strong><br>
+                        Web, Mobile, Desktop
+                    </div>
+                    
+                    <div class="arrow">↓</div>
+                    
+                    <div class="component-box">
+                        <strong>CDN</strong><br>
+                        CloudFlare
+                    </div>
+                    
+                    <div class="arrow">↓</div>
+                    
+                    <div class="component-box">
+                        <strong>LOAD BALANCER</strong><br>
+                        NGINX / AWS ELB
+                    </div>
+                    
+                    <div class="arrow">↓</div>
+                    
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+                        <div class="component-box">API Gateway</div>
+                        <div class="component-box">WebSocket Server</div>
+                    </div>
+                    
+                    <div class="arrow">↓</div>
+                    
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                        <div class="component-box" style="font-size: 0.85em;">User Service</div>
+                        <div class="component-box" style="font-size: 0.85em;">Post Service</div>
+                        <div class="component-box" style="font-size: 0.85em;">Feed Service</div>
+                        <div class="component-box" style="font-size: 0.85em;">Message Service</div>
+                        <div class="component-box" style="font-size: 0.85em;">Job Service</div>
+                    </div>
+                    
+                    <div class="arrow">↓</div>
+                    
+                    <div class="component-box">
+                        <strong>CACHE LAYER</strong><br>
+                        Redis / Memcached
+                    </div>
+                    
+                    <div class="arrow">↓</div>
+                    
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                        <div class="component-box" style="font-size: 0.85em;">PostgreSQL</div>
+                        <div class="component-box" style="font-size: 0.85em;">Cassandra</div>
+                        <div class="component-box" style="font-size: 0.85em;">Elasticsearch</div>
+                        <div class="component-box" style="font-size: 0.85em;">Neo4j</div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Core System Components</h3>
+
+                <h4>1. User Management Service</h4>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>User registration and authentication (JWT-based)</li>
+                    <li>Profile CRUD operations</li>
+                    <li>Session management</li>
+                    <li>Password reset and email verification</li>
+                </ul>
+                <p><strong>Database:</strong> PostgreSQL (ACID compliance needed)</p>
+                <p><strong>Caching:</strong> Redis for session storage</p>
+
+                <h4>2. Connection Management Service</h4>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Send/accept/decline connection requests</li>
+                    <li>Manage user's network graph</li>
+                    <li>Suggest connections based on mutual connections</li>
+                    <li>Calculate network degrees (1st, 2nd, 3rd connections)</li>
+                </ul>
+                <p><strong>Database:</strong> Neo4j (graph database for relationship queries)</p>
+                <p><strong>Alternative:</strong> PostgreSQL with adjacency list + caching</p>
+
+                <h4>3. Post & Feed Service</h4>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Create, edit, delete posts</li>
+                    <li>Generate personalized feed using ML ranking</li>
+                    <li>Handle likes, comments, shares</li>
+                    <li>Content moderation</li>
+                </ul>
+                <p><strong>Database:</strong> Cassandra (high write throughput for posts)</p>
+                <p><strong>Caching:</strong> Redis for pre-computed feeds</p>
+                <p><strong>Feed Generation Approach:</strong> Hybrid (Fan-out on write for influencers, fan-out on read for regular users)</p>
+
+                <h4>4. Messaging Service</h4>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Real-time message delivery via WebSockets</li>
+                    <li>Message persistence and history</li>
+                    <li>Read receipts and typing indicators</li>
+                    <li>File sharing in messages</li>
+                </ul>
+                <p><strong>Protocol:</strong> WebSocket for real-time, fallback to long-polling</p>
+                <p><strong>Database:</strong> Cassandra (partitioned by conversation_id)</p>
+                <p><strong>Message Queue:</strong> RabbitMQ for offline message delivery</p>
+
+                <h4>5. Job Service</h4>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Job posting by companies</li>
+                    <li>Job search with filters</li>
+                    <li>Application submission and tracking</li>
+                    <li>Job recommendations based on user profile</li>
+                </ul>
+                <p><strong>Database:</strong> PostgreSQL for job data</p>
+                <p><strong>Search:</strong> Elasticsearch for fast job search</p>
+
+                <h4>6. Search Service</h4>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Search people, jobs, posts, companies</li>
+                    <li>Auto-complete suggestions</li>
+                    <li>Faceted search with filters</li>
+                    <li>Relevance ranking</li>
+                </ul>
+                <p><strong>Technology:</strong> Elasticsearch</p>
+                <p><strong>Indexing:</strong> Real-time indexing via Kafka</p>
+
+                <h4>7. Notification Service</h4>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>In-app notifications</li>
+                    <li>Email notifications</li>
+                    <li>Push notifications (mobile)</li>
+                    <li>User preference management</li>
+                </ul>
+                <p><strong>Queue:</strong> RabbitMQ for async processing</p>
+                <p><strong>Storage:</strong> Cassandra for notification history</p>
+            </section>
+
+            <section>
+                <h3>Data Flow - Creating a Post</h3>
+                
+                <div class="metric-box">
+                    <strong>1.</strong> User creates post via client → API Gateway<br>
+                    <strong>2.</strong> API Gateway authenticates request, routes to Post Service<br>
+                    <strong>3.</strong> Post Service validates content, runs moderation checks<br>
+                    <strong>4.</strong> Post stored in Cassandra with post_id<br>
+                    <strong>5.</strong> Event published to Kafka: "PostCreated"<br>
+                    <strong>6.</strong> Feed Service consumes event, updates followers' feeds<br>
+                    <strong>7.</strong> For active followers: Fan-out to Redis feed cache<br>
+                    <strong>8.</strong> Notification Service sends notifications to followers<br>
+                    <strong>9.</strong> Search Service indexes post for searchability<br>
+                    <strong>10.</strong> Return success response to client
+                </div>
+            </section>
+
+            <section>
+                <h3>Feed Generation Strategy</h3>
+
+                <h4>Hybrid Approach (Fan-out on Write + Fan-out on Read)</h4>
+                
+                <p><strong>For Regular Users (followers under 10,000):</strong></p>
+                <ul>
+                    <li>Fan-out on write: When a post is created, push to all followers' feed cache</li>
+                    <li>Each follower has a pre-computed feed in Redis</li>
+                    <li>Fast read time: Just fetch from cache</li>
+                    <li>Trade-off: Higher write cost, but users get instant feed updates</li>
+                </ul>
+
+                <p><strong>For Influencers/Celebrities (followers over 10,000):</strong></p>
+                <ul>
+                    <li>Fan-out on read: Don't push to all followers immediately</li>
+                    <li>When follower requests feed, fetch influencer's recent posts on-the-fly</li>
+                    <li>Merge with pre-computed feed from regular users</li>
+                    <li>Trade-off: Slightly slower read, but avoids millions of writes</li>
+                </ul>
+
+                <h4>Feed Ranking Algorithm</h4>
+                <ul>
+                    <li>ML model scores each post based on: engagement likelihood, recency, user preferences, content type</li>
+                    <li>Features: author relationship strength, past engagement with author, time of post, content category</li>
+                    <li>Model: Gradient Boosted Decision Trees or Neural Network</li>
+                    <li>Training: Online learning with user feedback (likes, clicks, time spent)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Sharding Strategy</h3>
+
+                <h4>User Data Sharding</h4>
+                <ul>
+                    <li><strong>Shard Key:</strong> user_id % number_of_shards</li>
+                    <li><strong>Benefit:</strong> Even distribution of users</li>
+                    <li><strong>Challenge:</strong> Connection queries may hit multiple shards</li>
+                </ul>
+
+                <h4>Post Data Sharding (Cassandra)</h4>
+                <ul>
+                    <li><strong>Partition Key:</strong> user_id (all posts by a user in same partition)</li>
+                    <li><strong>Clustering Key:</strong> created_at (sorted by time within partition)</li>
+                    <li><strong>Benefit:</strong> Fast retrieval of user's posts</li>
+                </ul>
+
+                <h4>Message Data Sharding</h4>
+                <ul>
+                    <li><strong>Partition Key:</strong> conversation_id</li>
+                    <li><strong>Benefit:</strong> All messages in a conversation are co-located</li>
+                    <li><strong>Retrieval:</strong> Fast loading of conversation history</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Scalability Considerations</h3>
+
+                <h4>Horizontal Scaling</h4>
+                <ul>
+                    <li>All services are stateless and can be scaled independently</li>
+                    <li>Auto-scaling based on CPU, memory, request rate</li>
+                    <li>Kubernetes for container orchestration</li>
+                </ul>
+
+                <h4>Database Scaling</h4>
+                <ul>
+                    <li><strong>Read Replicas:</strong> Multiple read replicas for PostgreSQL</li>
+                    <li><strong>Sharding:</strong> Horizontal partitioning of data</li>
+                    <li><strong>Cassandra:</strong> Naturally distributed, add more nodes for scaling</li>
+                </ul>
+
+                <h4>Caching Strategy</h4>
+                <ul>
+                    <li>Multiple cache layers: CDN, Redis, In-memory application cache</li>
+                    <li>Cache-aside pattern for most read operations</li>
+                    <li>Write-through cache for critical data (user sessions)</li>
+                </ul>
+
+                <h4>Asynchronous Processing</h4>
+                <ul>
+                    <li>Use message queues for non-critical operations (email sending, analytics)</li>
+                    <li>Event-driven architecture with Kafka for real-time processing</li>
+                    <li>Background jobs for heavy computations (feed generation, recommendations)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Trade-offs & Design Decisions</h3>
+
+                <h4>CAP Theorem Choices</h4>
+                <ul>
+                    <li><strong>User data & connections:</strong> CP (Consistency + Partition tolerance) - PostgreSQL</li>
+                    <li><strong>Posts & feed:</strong> AP (Availability + Partition tolerance) - Cassandra, eventual consistency acceptable</li>
+                    <li><strong>Messages:</strong> CP for delivery guarantee, but eventual consistency for read receipts</li>
+                </ul>
+
+                <h4>SQL vs NoSQL</h4>
+                <ul>
+                    <li><strong>PostgreSQL:</strong> User profiles, connections (ACID needed)</li>
+                    <li><strong>Cassandra:</strong> Posts, messages (high write throughput, eventual consistency okay)</li>
+                    <li><strong>Neo4j:</strong> Social graph queries (shortest path, mutual connections)</li>
+                </ul>
+
+                <h4>Consistency vs Availability</h4>
+                <ul>
+                    <li>Feed can be eventually consistent (minor delay acceptable)</li>
+                    <li>Financial transactions need strong consistency</li>
+                    <li>User profile updates need immediate consistency</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Future Enhancements</h3>
+                <ul>
+                    <li><strong>Video Support:</strong> Separate video processing pipeline with transcoding</li>
+                    <li><strong>Live Streaming:</strong> WebRTC for live events and video calls</li>
+                    <li><strong>AI-Powered Features:</strong> Smart reply suggestions, content recommendations</li>
+                    <li><strong>Blockchain:</strong> Verified credentials and certifications</li>
+                    <li><strong>AR/VR:</strong> Virtual networking events and immersive profiles</li>
+                    <li><strong>GraphQL Gateway:</strong> Unified API layer for flexible client queries</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

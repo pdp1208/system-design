@@ -76,7 +76,6 @@
             border: 1px solid #e5e5e5;
             border-radius: 8px;
             padding: 40px;
-            min-height: 500px;
         }
 
         .design-content h3 {
@@ -85,10 +84,17 @@
             padding-bottom: 12px;
             border-bottom: 1px solid #e5e5e5;
             font-weight: 600;
+            font-size: 1.4em;
         }
 
         .design-content section {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        .design-content p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
         }
 
         .design-content ul {
@@ -97,35 +103,34 @@
             color: #333;
         }
 
-        .design-content pre {
+        .design-content li {
+            margin-bottom: 8px;
+        }
+
+        .flow-diagram {
             background: #fafafa;
             border: 1px solid #e5e5e5;
-            padding: 20px;
+            padding: 30px;
             border-radius: 6px;
-            overflow-x: auto;
-            margin: 15px 0;
-        }
-
-        .design-content code {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            color: #1a1a1a;
-        }
-
-        .placeholder {
-            background: #fafafa;
-            border: 2px dashed #e5e5e5;
-            border-radius: 8px;
-            padding: 60px;
-            text-align: center;
-            color: #999;
             margin: 20px 0;
+            font-family: monospace;
+            line-height: 2;
+            overflow-x: auto;
         }
 
-        .placeholder h4 {
-            margin-bottom: 10px;
-            font-size: 1.3em;
+        .flow-box {
+            background: white;
+            border: 1px solid #1a1a1a;
+            padding: 15px 25px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .arrow {
             color: #666;
+            font-size: 1.2em;
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -144,35 +149,199 @@
     <div class="content">
         <div class="header-section">
             <h2>Flow Chart</h2>
-            <p>Visual representation of the system's workflow and data flow processes.</p>
+            <p>Visual representation of LinkedIn's key workflows and user interaction flows.</p>
         </div>
 
         <div class="design-content">
             <section>
-                <h3>User Authentication Flow</h3>
-                <div class="placeholder">
-                    <h4>Add your flow chart content here</h4>
-                    <p>You can use Mermaid, draw.io exports, or any visualization tool</p>
+                <h3>1. User Registration & Onboarding Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-box">User lands on LinkedIn</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Sign Up Form (Email/Phone)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Email/SMS Verification</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Basic Profile Creation (Name, Photo, Headline)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Add Work Experience</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Add Education</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Connect with People (Import contacts, Search)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Follow Companies & Influencers</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Complete Profile (Skills, Recommendations)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Home Feed Ready</div>
                 </div>
             </section>
 
             <section>
-                <h3>Example: Login Process</h3>
-                <pre><code>User → Login Page → Enter Credentials → Validate
-    ↓
-    → Authentication Service → Check Database
-    ↓
-    → Generate Token → Return to User → Redirect to Dashboard</code></pre>
+                <h3>2. User Authentication Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-box">User enters credentials</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Validate Email/Password</div>
+                    <div class="arrow">↓ (valid) / → (invalid: show error)</div>
+                    <div class="flow-box">Check 2FA enabled?</div>
+                    <div class="arrow">↓ (yes) / → (no: generate session)</div>
+                    <div class="flow-box">Send 2FA code</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Verify 2FA code</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Generate JWT token & Session</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Redirect to Home Feed</div>
+                </div>
             </section>
 
             <section>
-                <h3>Key Components</h3>
-                <ul>
-                    <li>Entry points and user actions</li>
-                    <li>Processing steps and decision nodes</li>
-                    <li>Data transformations</li>
-                    <li>Output and error handling paths</li>
-                </ul>
+                <h3>3. Post Creation & Publishing Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-box">User clicks "Start a post"</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Post Editor Opens</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">User types content / uploads media</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Select visibility (Public/Connections/Private)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Add hashtags (optional)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Click "Post"</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Content moderation check (spam, abuse)</div>
+                    <div class="arrow">↓ (pass) / → (fail: reject/flag)</div>
+                    <div class="flow-box">Save to database</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Generate feed entries for connections</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Trigger notifications</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Post appears in feeds</div>
+                </div>
+            </section>
+
+            <section>
+                <h3>4. Job Search & Application Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-box">User navigates to Jobs section</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Enter search criteria (title, location, filters)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Search service queries database</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Apply ranking algorithm (relevance, date)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Display job listings</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">User clicks on a job</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Show job details page</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">User clicks "Apply"</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Check if Easy Apply available</div>
+                    <div class="arrow">↓ (yes) / → (no: redirect to company site)</div>
+                    <div class="flow-box">Pre-fill application with profile data</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">User reviews & submits</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Store application record</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Notify recruiter</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Send confirmation to user</div>
+                </div>
+            </section>
+
+            <section>
+                <h3>5. Connection Request Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-box">User views profile</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Clicks "Connect"</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Add note (optional)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Send connection request</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Store in pending_connections table</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Trigger notification to recipient</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Recipient receives notification</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Recipient accepts/ignores/declines</div>
+                    <div class="arrow">↓ (accept) / → (ignore/decline: remove request)</div>
+                    <div class="flow-box">Create bidirectional connection</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Update both users' networks</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Notify requester of acceptance</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Update feed algorithms for both users</div>
+                </div>
+            </section>
+
+            <section>
+                <h3>6. News Feed Generation Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-box">User opens LinkedIn app/website</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Fetch user's connection IDs</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Fetch recent posts from connections</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Fetch posts from followed pages/companies</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Fetch sponsored content (ads)</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Apply ML ranking algorithm</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Score based on: engagement, recency, relevance</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Mix organic & sponsored content</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Cache feed for user</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Return paginated feed</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Display to user</div>
+                </div>
+            </section>
+
+            <section>
+                <h3>7. Messaging Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-box">User opens messaging</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Load conversation list</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">User selects conversation / starts new</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Load message history</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Establish WebSocket connection</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">User types message</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Send via WebSocket</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Message service receives</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Store in messages database</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Check recipient online status</div>
+                    <div class="arrow">↓ (online) / → (offline: send push notification)</div>
+                    <div class="flow-box">Deliver via WebSocket to recipient</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Update read receipts</div>
+                    <div class="arrow">↓</div>
+                    <div class="flow-box">Display in recipient's chat</div>
+                </div>
             </section>
         </div>
     </div>

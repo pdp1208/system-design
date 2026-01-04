@@ -1,1 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn - Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .navbar {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar a {
+            color: #1a1a1a;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar a:hover {
+            opacity: 0.6;
+        }
+
+        .navbar h1 {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-section {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-section h2 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .design-content {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 40px;
+        }
+
+        .design-content h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+            font-weight: 600;
+            font-size: 1.4em;
+        }
+
+        .design-content h4 {
+            color: #1a1a1a;
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .design-content section {
+            margin-bottom: 40px;
+        }
+
+        .design-content p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .design-content ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .design-content li {
+            margin-bottom: 8px;
+        }
+
+        .arch-diagram {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            padding: 30px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .layer {
+            background: white;
+            border: 2px solid #1a1a1a;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .layer-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .components {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .component {
+            background: #f0f0f0;
+            border: 1px solid #1a1a1a;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .arrow-down {
+            text-align: center;
+            font-size: 1.5em;
+            color: #666;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../../index.html">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Hub
+        </a>
+        <h1>LinkedIn - Architecture</h1>
+        <div></div>
+    </nav>
+
+    <div class="content">
+        <div class="header-section">
+            <h2>System Architecture</h2>
+            <p>Overall technical architecture of LinkedIn's distributed system design.</p>
+        </div>
+
+        <div class="design-content">
+            <section>
+                <h3>Architecture Overview</h3>
+                <div class="arch-diagram">
+                    <div class="layer">
+                        <div class="layer-title">CLIENT LAYER</div>
+                        <div class="components">
+                            <div class="component">Web App (React)</div>
+                            <div class="component">Mobile Apps (iOS/Android)</div>
+                            <div class="component">Desktop App</div>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="layer">
+                        <div class="layer-title">CDN & LOAD BALANCER</div>
+                        <div class="components">
+                            <div class="component">CloudFlare / Akamai CDN</div>
+                            <div class="component">NGINX Load Balancer</div>
+                            <div class="component">API Gateway</div>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="layer">
+                        <div class="layer-title">APPLICATION LAYER (Microservices)</div>
+                        <div class="components">
+                            <div class="component">User Service</div>
+                            <div class="component">Profile Service</div>
+                            <div class="component">Post Service</div>
+                            <div class="component">Feed Service</div>
+                            <div class="component">Messaging Service</div>
+                            <div class="component">Job Service</div>
+                            <div class="component">Search Service</div>
+                            <div class="component">Notification Service</div>
+                            <div class="component">Connection Service</div>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="layer">
+                        <div class="layer-title">CACHING LAYER</div>
+                        <div class="components">
+                            <div class="component">Redis (Session, Feed)</div>
+                            <div class="component">Memcached (Query results)</div>
+                            <div class="component">CDN Cache (Static assets)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="layer">
+                        <div class="layer-title">DATA LAYER</div>
+                        <div class="components">
+                            <div class="component">PostgreSQL (User data)</div>
+                            <div class="component">Cassandra (Posts, Messages)</div>
+                            <div class="component">Elasticsearch (Search)</div>
+                            <div class="component">Neo4j (Social Graph)</div>
+                            <div class="component">S3 (Media storage)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">↓</div>
+                    
+                    <div class="layer">
+                        <div class="layer-title">ANALYTICS & ML LAYER</div>
+                        <div class="components">
+                            <div class="component">Kafka (Event streaming)</div>
+                            <div class="component">Spark (Data processing)</div>
+                            <div class="component">Hadoop (Big data)</div>
+                            <div class="component">TensorFlow (ML models)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Key Architectural Components</h3>
+                
+                <h4>1. Client Layer</h4>
+                <ul>
+                    <li><strong>Web Application:</strong> React-based SPA with server-side rendering for SEO</li>
+                    <li><strong>Mobile Apps:</strong> Native iOS and Android apps for optimal performance</li>
+                    <li><strong>Desktop Application:</strong> Electron-based desktop app</li>
+                    <li><strong>Communication:</strong> REST APIs + GraphQL for flexible data fetching</li>
+                </ul>
+
+                <h4>2. Load Balancing & API Gateway</h4>
+                <ul>
+                    <li><strong>NGINX:</strong> Layer 7 load balancer distributing traffic across application servers</li>
+                    <li><strong>API Gateway:</strong> Rate limiting, authentication, request routing</li>
+                    <li><strong>CDN:</strong> CloudFlare/Akamai for serving static assets globally</li>
+                    <li><strong>SSL Termination:</strong> Handle HTTPS at load balancer level</li>
+                </ul>
+
+                <h4>3. Microservices Architecture</h4>
+                <p>LinkedIn uses a microservices architecture with the following key services:</p>
+                <ul>
+                    <li><strong>User Service:</strong> Authentication, user accounts, permissions</li>
+                    <li><strong>Profile Service:</strong> Profile CRUD operations, work history, skills</li>
+                    <li><strong>Post Service:</strong> Creating, editing, deleting posts</li>
+                    <li><strong>Feed Service:</strong> Personalized feed generation using ML algorithms</li>
+                    <li><strong>Messaging Service:</strong> Real-time messaging via WebSockets</li>
+                    <li><strong>Job Service:</strong> Job postings, applications, recommendations</li>
+                    <li><strong>Search Service:</strong> Elasticsearch-powered search for profiles, jobs, posts</li>
+                    <li><strong>Notification Service:</strong> Push notifications, email notifications</li>
+                    <li><strong>Connection Service:</strong> Managing connections, network graph</li>
+                </ul>
+
+                <h4>4. Data Storage Strategy</h4>
+                <ul>
+                    <li><strong>PostgreSQL:</strong> Relational data (users, profiles, connections)</li>
+                    <li><strong>Cassandra:</strong> High-write scenarios (posts, messages, activity logs)</li>
+                    <li><strong>Neo4j:</strong> Graph database for social network relationships</li>
+                    <li><strong>Elasticsearch:</strong> Full-text search indexing</li>
+                    <li><strong>Redis:</strong> Caching layer for sessions, feed cache, frequently accessed data</li>
+                    <li><strong>S3/Object Storage:</strong> Images, videos, documents, profile pictures</li>
+                </ul>
+
+                <h4>5. Caching Strategy</h4>
+                <ul>
+                    <li><strong>Redis:</strong> User sessions, feed cache (TTL: 5-10 minutes)</li>
+                    <li><strong>Memcached:</strong> Database query results</li>
+                    <li><strong>CDN:</strong> Static assets (images, CSS, JS) with long TTL</li>
+                    <li><strong>Browser Cache:</strong> Client-side caching of API responses</li>
+                    <li><strong>Application Cache:</strong> In-memory caching in application servers</li>
+                </ul>
+
+                <h4>6. Real-time Communication</h4>
+                <ul>
+                    <li><strong>WebSockets:</strong> Real-time messaging, online status updates</li>
+                    <li><strong>Server-Sent Events (SSE):</strong> Live notifications</li>
+                    <li><strong>Long Polling:</strong> Fallback for older browsers</li>
+                    <li><strong>Message Broker:</strong> RabbitMQ/Kafka for async message delivery</li>
+                </ul>
+
+                <h4>7. Analytics & ML Pipeline</h4>
+                <ul>
+                    <li><strong>Kafka:</strong> Real-time event streaming (clicks, views, interactions)</li>
+                    <li><strong>Apache Spark:</strong> Stream and batch processing</li>
+                    <li><strong>Hadoop:</strong> Large-scale data storage and processing</li>
+                    <li><strong>TensorFlow/PyTorch:</strong> ML models for feed ranking, job recommendations</li>
+                    <li><strong>Feature Store:</strong> Centralized storage for ML features</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Communication Patterns</h3>
+                
+                <h4>Synchronous Communication</h4>
+                <ul>
+                    <li><strong>REST APIs:</strong> Standard CRUD operations</li>
+                    <li><strong>GraphQL:</strong> Flexible data fetching for complex queries</li>
+                    <li><strong>gRPC:</strong> Internal service-to-service communication</li>
+                </ul>
+
+                <h4>Asynchronous Communication</h4>
+                <ul>
+                    <li><strong>Message Queues:</strong> RabbitMQ for task queues (email sending, notifications)</li>
+                    <li><strong>Event Streaming:</strong> Kafka for event-driven architecture</li>
+                    <li><strong>Pub/Sub:</strong> Redis Pub/Sub for real-time features</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Scalability Strategies</h3>
+                
+                <h4>Horizontal Scaling</h4>
+                <ul>
+                    <li>Stateless application servers behind load balancers</li>
+                    <li>Auto-scaling groups based on CPU/memory metrics</li>
+                    <li>Database sharding by user ID or geographic region</li>
+                    <li>Read replicas for heavy read operations</li>
+                </ul>
+
+                <h4>Database Partitioning</h4>
+                <ul>
+                    <li><strong>User Data:</strong> Sharded by user_id across multiple PostgreSQL instances</li>
+                    <li><strong>Posts:</strong> Partitioned by timestamp in Cassandra</li>
+                    <li><strong>Messages:</strong> Sharded by conversation_id</li>
+                    <li><strong>Graph Data:</strong> Distributed Neo4j cluster</li>
+                </ul>
+
+                <h4>Caching Everywhere</h4>
+                <ul>
+                    <li>Multi-level caching (CDN → Application → Database)</li>
+                    <li>Cache warming strategies for frequently accessed data</li>
+                    <li>Cache invalidation using event-driven approach</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>High Availability & Fault Tolerance</h3>
+                <ul>
+                    <li><strong>Multi-region deployment:</strong> Active-active or active-passive setup</li>
+                    <li><strong>Database replication:</strong> Master-slave with automatic failover</li>
+                    <li><strong>Circuit breakers:</strong> Prevent cascading failures</li>
+                    <li><strong>Health checks:</strong> Regular monitoring and auto-recovery</li>
+                    <li><strong>Graceful degradation:</strong> Core features remain available during partial outages</li>
+                    <li><strong>Rate limiting:</strong> Protect services from overload</li>
+                    <li><strong>Backup & disaster recovery:</strong> Regular snapshots, point-in-time recovery</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Security Architecture</h3>
+                <ul>
+                    <li><strong>Authentication:</strong> OAuth 2.0, JWT tokens with refresh mechanism</li>
+                    <li><strong>Authorization:</strong> Role-based access control (RBAC)</li>
+                    <li><strong>Encryption:</strong> TLS 1.3 for data in transit, AES-256 for data at rest</li>
+                    <li><strong>API Security:</strong> Rate limiting, API key management, request validation</li>
+                    <li><strong>DDoS Protection:</strong> CloudFlare/AWS Shield</li>
+                    <li><strong>WAF:</strong> Web Application Firewall for common vulnerabilities</li>
+                    <li><strong>Data Privacy:</strong> GDPR compliance, data anonymization</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Monitoring & Observability</h3>
+                <ul>
+                    <li><strong>Metrics:</strong> Prometheus + Grafana for system metrics</li>
+                    <li><strong>Logging:</strong> ELK Stack (Elasticsearch, Logstash, Kibana)</li>
+                    <li><strong>Tracing:</strong> Jaeger for distributed tracing</li>
+                    <li><strong>APM:</strong> New Relic/DataDog for application performance monitoring</li>
+                    <li><strong>Alerting:</strong> PagerDuty for incident management</li>
+                    <li><strong>Synthetic Monitoring:</strong> Regular health checks from multiple locations</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

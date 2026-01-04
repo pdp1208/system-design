@@ -1,1 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn - Low Level Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .navbar {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar a {
+            color: #1a1a1a;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar a:hover {
+            opacity: 0.6;
+        }
+
+        .navbar h1 {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-section {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-section h2 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .design-content {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 40px;
+        }
+
+        .design-content h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+            font-weight: 600;
+            font-size: 1.4em;
+        }
+
+        .design-content h4 {
+            color: #1a1a1a;
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .design-content section {
+            margin-bottom: 40px;
+        }
+
+        .design-content p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .design-content ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .design-content li {
+            margin-bottom: 8px;
+        }
+
+        .code-block {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #1a1a1a;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 1px solid #e5e5e5;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e5e5e5;
+        }
+
+        th {
+            background: #fafafa;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        td {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../../index.html">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Hub
+        </a>
+        <h1>LinkedIn - Low Level Design</h1>
+        <div></div>
+    </nav>
+
+    <div class="content">
+        <div class="header-section">
+            <h2>Low Level Design</h2>
+            <p>Detailed component designs, database schemas, APIs, and class structures.</p>
+        </div>
+
+        <div class="design-content">
+            <section>
+                <h3>Database Schema Design</h3>
+                
+                <h4>1. Users Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE users (
+    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    profile_picture_url VARCHAR(500),
+    headline VARCHAR(255),
+    location VARCHAR(255),
+    industry VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login_at TIMESTAMP,
+    is_verified BOOLEAN DEFAULT FALSE,
+    account_status ENUM('active', 'suspended', 'deleted') DEFAULT 'active',
+    INDEX idx_email (email),
+    INDEX idx_created_at (created_at)
+);</pre>
+                </div>
+
+                <h4>2. Profiles Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE profiles (
+    profile_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    summary TEXT,
+    website VARCHAR(500),
+    twitter_handle VARCHAR(100),
+    github_url VARCHAR(500),
+    profile_views_count INT DEFAULT 0,
+    connection_count INT DEFAULT 0,
+    follower_count INT DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id)
+);</pre>
+                </div>
+
+                <h4>3. Work Experience Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE work_experience (
+    experience_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    company_name VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    location VARCHAR(255),
+    start_date DATE NOT NULL,
+    end_date DATE,
+    is_current BOOLEAN DEFAULT FALSE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_company (company_name)
+);</pre>
+                </div>
+
+                <h4>4. Education Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE education (
+    education_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    school_name VARCHAR(255) NOT NULL,
+    degree VARCHAR(255),
+    field_of_study VARCHAR(255),
+    start_date DATE,
+    end_date DATE,
+    grade VARCHAR(50),
+    description TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id)
+);</pre>
+                </div>
+
+                <h4>5. Connections Table (Adjacency List)</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE connections (
+    connection_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id_1 BIGINT NOT NULL,
+    user_id_2 BIGINT NOT NULL,
+    status ENUM('pending', 'accepted', 'declined') DEFAULT 'pending',
+    requested_by BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id_1) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id_2) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_connection (user_id_1, user_id_2),
+    INDEX idx_user1_status (user_id_1, status),
+    INDEX idx_user2_status (user_id_2, status)
+);</pre>
+                </div>
+
+                <h4>6. Posts Table (Cassandra - NoSQL)</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE posts (
+    post_id UUID PRIMARY KEY,
+    user_id BIGINT,
+    content TEXT,
+    media_urls LIST&lt;TEXT&gt;,
+    visibility TEXT,  -- 'public', 'connections', 'private'
+    like_count INT,
+    comment_count INT,
+    share_count INT,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);</pre>
+                </div>
+
+                <h4>7. Comments Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE comments (
+    comment_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    post_id UUID NOT NULL,
+    user_id BIGINT NOT NULL,
+    parent_comment_id BIGINT,  -- for nested comments
+    content TEXT NOT NULL,
+    like_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_post_id (post_id),
+    INDEX idx_user_id (user_id)
+);</pre>
+                </div>
+
+                <h4>8. Likes Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE likes (
+    like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    target_type ENUM('post', 'comment') NOT NULL,
+    target_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_like (user_id, target_type, target_id),
+    INDEX idx_target (target_type, target_id)
+);</pre>
+                </div>
+
+                <h4>9. Messages Table (Cassandra)</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE messages (
+    message_id UUID PRIMARY KEY,
+    conversation_id UUID,
+    sender_id BIGINT,
+    receiver_id BIGINT,
+    content TEXT,
+    media_urls LIST&lt;TEXT&gt;,
+    is_read BOOLEAN,
+    created_at TIMESTAMP
+) WITH CLUSTERING ORDER BY (created_at DESC);</pre>
+                </div>
+
+                <h4>10. Jobs Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE jobs (
+    job_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    company_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    location VARCHAR(255),
+    job_type ENUM('full-time', 'part-time', 'contract', 'internship'),
+    experience_level VARCHAR(50),
+    salary_range VARCHAR(100),
+    skills_required TEXT,  -- JSON array
+    is_remote BOOLEAN DEFAULT FALSE,
+    application_count INT DEFAULT 0,
+    views_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP,
+    status ENUM('active', 'closed', 'draft') DEFAULT 'active',
+    INDEX idx_company (company_id),
+    INDEX idx_location (location),
+    INDEX idx_status_created (status, created_at)
+);</pre>
+                </div>
+
+                <h4>11. Job Applications Table</h4>
+                <div class="code-block">
+                    <pre>
+CREATE TABLE job_applications (
+    application_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    job_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    resume_url VARCHAR(500),
+    cover_letter TEXT,
+    status ENUM('submitted', 'reviewed', 'interview', 'rejected', 'accepted'),
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_application (job_id, user_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_job_status (job_id, status)
+);</pre>
+                </div>
+            </section>
+
+            <section>
+                <h3>API Design</h3>
+
+                <h4>Authentication APIs</h4>
+                <div class="code-block">
+                    <pre>
+POST /api/v1/auth/register
+Request: { email, password, first_name, last_name }
+Response: { user_id, token, refresh_token }
+
+POST /api/v1/auth/login
+Request: { email, password }
+Response: { user_id, token, refresh_token, expires_in }
+
+POST /api/v1/auth/logout
+Headers: Authorization: Bearer {token}
+Response: { message: "Logged out successfully" }
+
+POST /api/v1/auth/refresh
+Request: { refresh_token }
+Response: { token, expires_in }</pre>
+                </div>
+
+                <h4>User Profile APIs</h4>
+                <div class="code-block">
+                    <pre>
+GET /api/v1/users/{user_id}
+Response: { user details, profile, experience, education }
+
+PUT /api/v1/users/{user_id}
+Request: { first_name, last_name, headline, location, ... }
+Response: { updated user object }
+
+GET /api/v1/users/{user_id}/connections
+Query Params: ?page=1&limit=20
+Response: { connections: [...], total_count, page_info }
+
+POST /api/v1/users/{user_id}/experience
+Request: { company_name, title, start_date, end_date, ... }
+Response: { experience_id, created experience object }</pre>
+                </div>
+
+                <h4>Connection APIs</h4>
+                <div class="code-block">
+                    <pre>
+POST /api/v1/connections/request
+Request: { to_user_id, note }
+Response: { connection_id, status: "pending" }
+
+POST /api/v1/connections/{connection_id}/accept
+Response: { connection_id, status: "accepted" }
+
+DELETE /api/v1/connections/{connection_id}
+Response: { message: "Connection removed" }
+
+GET /api/v1/connections/suggestions
+Query Params: ?limit=10
+Response: { suggestions: [user objects with mutual connections] }</pre>
+                </div>
+
+                <h4>Post APIs</h4>
+                <div class="code-block">
+                    <pre>
+POST /api/v1/posts
+Request: { content, media_urls, visibility }
+Response: { post_id, created post object }
+
+GET /api/v1/posts/{post_id}
+Response: { post details with author info, likes, comments }
+
+PUT /api/v1/posts/{post_id}
+Request: { content }
+Response: { updated post object }
+
+DELETE /api/v1/posts/{post_id}
+Response: { message: "Post deleted" }
+
+POST /api/v1/posts/{post_id}/like
+Response: { message: "Post liked", like_count }
+
+POST /api/v1/posts/{post_id}/comment
+Request: { content, parent_comment_id }
+Response: { comment_id, created comment object }</pre>
+                </div>
+
+                <h4>Feed APIs</h4>
+                <div class="code-block">
+                    <pre>
+GET /api/v1/feed
+Query Params: ?page=1&limit=20
+Response: { posts: [...], next_cursor, has_more }
+
+GET /api/v1/feed/user/{user_id}
+Query Params: ?page=1&limit=20
+Response: { posts from specific user }</pre>
+                </div>
+
+                <h4>Job APIs</h4>
+                <div class="code-block">
+                    <pre>
+GET /api/v1/jobs
+Query Params: ?title=engineer&location=SF&page=1&limit=20
+Response: { jobs: [...], total_count, filters }
+
+GET /api/v1/jobs/{job_id}
+Response: { job details, company info, similar jobs }
+
+POST /api/v1/jobs/{job_id}/apply
+Request: { resume_url, cover_letter }
+Response: { application_id, status: "submitted" }
+
+GET /api/v1/jobs/applications
+Response: { applications: [job applications with status] }</pre>
+                </div>
+
+                <h4>Search APIs</h4>
+                <div class="code-block">
+                    <pre>
+GET /api/v1/search
+Query Params: ?q=software+engineer&type=people&page=1
+Response: { results: [...], facets, total_count }
+
+GET /api/v1/search/people
+Query Params: ?q=john&filters={location,company}
+Response: { people: [user profiles matching query] }
+
+GET /api/v1/search/jobs
+Query Params: ?q=developer&location=remote
+Response: { jobs: [matching jobs] }</pre>
+                </div>
+            </section>
+
+            <section>
+                <h3>Class Diagrams (Object-Oriented Design)</h3>
+
+                <h4>User Service Classes</h4>
+                <div class="code-block">
+                    <pre>
+class User {
+    - userId: Long
+    - email: String
+    - passwordHash: String
+    - firstName: String
+    - lastName: String
+    - profile: Profile
+    - connections: List&lt;Connection&gt;
+    
+    + register()
+    + login()
+    + updateProfile()
+    + getConnections()
+}
+
+class Profile {
+    - profileId: Long
+    - userId: Long
+    - summary: String
+    - headline: String
+    - workExperience: List&lt;WorkExperience&gt;
+    - education: List&lt;Education&gt;
+    
+    + addWorkExperience()
+    + addEducation()
+    + updateSummary()
+}
+
+class Connection {
+    - connectionId: Long
+    - userId1: Long
+    - userId2: Long
+    - status: ConnectionStatus
+    
+    + sendRequest()
+    + acceptRequest()
+    + removeConnection()
+}</pre>
+                </div>
+
+                <h4>Post Service Classes</h4>
+                <div class="code-block">
+                    <pre>
+class Post {
+    - postId: UUID
+    - authorId: Long
+    - content: String
+    - mediaUrls: List&lt;String&gt;
+    - visibility: Visibility
+    - likes: Set&lt;Like&gt;
+    - comments: List&lt;Comment&gt;
+    - createdAt: Timestamp
+    
+    + create()
+    + update()
+    + delete()
+    + like()
+    + addComment()
+}
+
+class Comment {
+    - commentId: Long
+    - postId: UUID
+    - userId: Long
+    - content: String
+    - parentCommentId: Long
+    - likes: Set&lt;Like&gt;
+    
+    + create()
+    + reply()
+    + like()
+}
+
+class Like {
+    - likeId: Long
+    - userId: Long
+    - targetType: TargetType
+    - targetId: Long
+    
+    + create()
+    + remove()
+}</pre>
+                </div>
+
+                <h4>Feed Service Classes</h4>
+                <div class="code-block">
+                    <pre>
+class FeedService {
+    - feedGenerator: FeedGenerator
+    - rankingAlgorithm: RankingAlgorithm
+    - cacheManager: CacheManager
+    
+    + generateFeed(userId): List&lt;Post&gt;
+    + getFeedFromCache(userId): List&lt;Post&gt;
+    + invalidateCache(userId)
+}
+
+class FeedGenerator {
+    - postRepository: PostRepository
+    - connectionRepository: ConnectionRepository
+    
+    + fetchRelevantPosts(userId): List&lt;Post&gt;
+    + filterByVisibility(posts, userId): List&lt;Post&gt;
+}
+
+class RankingAlgorithm {
+    - mlModel: MLModel
+    
+    + rankPosts(posts, userPreferences): List&lt;Post&gt;
+    + calculateEngagementScore(post): Double
+}</pre>
+                </div>
+
+                <h4>Messaging Service Classes</h4>
+                <div class="code-block">
+                    <pre>
+class Message {
+    - messageId: UUID
+    - conversationId: UUID
+    - senderId: Long
+    - receiverId: Long
+    - content: String
+    - isRead: Boolean
+    - timestamp: Timestamp
+    
+    + send()
+    + markAsRead()
+}
+
+class Conversation {
+    - conversationId: UUID
+    - participants: Set&lt;Long&gt;
+    - messages: List&lt;Message&gt;
+    - lastMessageAt: Timestamp
+    
+    + addMessage(message)
+    + getMessages(limit, offset): List&lt;Message&gt;
+}
+
+class MessagingService {
+    - messageRepository: MessageRepository
+    - websocketManager: WebSocketManager
+    
+    + sendMessage(message)
+    + deliverMessage(recipientId, message)
+    + getConversations(userId): List&lt;Conversation&gt;
+}</pre>
+                </div>
+            </section>
+
+            <section>
+                <h3>Caching Strategy (Low Level)</h3>
+                
+                <h4>Feed Cache Implementation</h4>
+                <div class="code-block">
+                    <pre>
+class FeedCache {
+    private RedisClient redis;
+    private final int FEED_CACHE_TTL = 600; // 10 minutes
+    
+    public List&lt;Post&gt; getFeed(Long userId) {
+        String key = "feed:" + userId;
+        String cachedFeed = redis.get(key);
+        
+        if (cachedFeed != null) {
+            return deserializePosts(cachedFeed);
+        }
+        
+        List&lt;Post&gt; feed = generateFreshFeed(userId);
+        redis.setex(key, FEED_CACHE_TTL, serializePosts(feed));
+        return feed;
+    }
+    
+    public void invalidateFeed(Long userId) {
+        redis.del("feed:" + userId);
+    }
+}</pre>
+                </div>
+
+                <h4>Session Management</h4>
+                <div class="code-block">
+                    <pre>
+class SessionManager {
+    private RedisClient redis;
+    private final int SESSION_TTL = 3600 * 24 * 7; // 7 days
+    
+    public void createSession(String sessionId, User user) {
+        String key = "session:" + sessionId;
+        redis.setex(key, SESSION_TTL, serializeUser(user));
+    }
+    
+    public User getSession(String sessionId) {
+        String key = "session:" + sessionId;
+        String userData = redis.get(key);
+        return userData != null ? deserializeUser(userData) : null;
+    }
+}</pre>
+                </div>
+            </section>
+
+            <section>
+                <h3>Design Patterns Used</h3>
+                
+                <h4>Repository Pattern</h4>
+                <p>Abstracts data access logic from business logic</p>
+                <div class="code-block">
+                    <pre>
+interface UserRepository {
+    User findById(Long userId);
+    User save(User user);
+    void delete(Long userId);
+    List&lt;User&gt; findByEmail(String email);
+}</pre>
+                </div>
+
+                <h4>Factory Pattern</h4>
+                <p>Creating different types of notifications</p>
+                <div class="code-block">
+                    <pre>
+class NotificationFactory {
+    public Notification createNotification(NotificationType type) {
+        switch(type) {
+            case EMAIL: return new EmailNotification();
+            case PUSH: return new PushNotification();
+            case IN_APP: return new InAppNotification();
+        }
+    }
+}</pre>
+                </div>
+
+                <h4>Observer Pattern</h4>
+                <p>For real-time updates and notifications</p>
+                <div class="code-block">
+                    <pre>
+interface EventListener {
+    void onEvent(Event event);
+}
+
+class PostCreatedListener implements EventListener {
+    public void onEvent(Event event) {
+        // Notify followers, update feed cache, etc.
+    }
+}</pre>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
