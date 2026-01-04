@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Design Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            color: #1a1a1a;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 0 40px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .app-card {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 28px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .app-card:hover {
+            border-color: #1a1a1a;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .app-card h2 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .design-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .design-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #1a1a1a;
+            transition: all 0.2s ease;
+            font-size: 0.95em;
+        }
+
+        .design-link:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-color: #1a1a1a;
+        }
+
+        .design-link svg {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .add-app-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .add-app-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 480px;
+            width: 90%;
+            border: 1px solid #e5e5e5;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 24px;
+            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 1.4em;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.2s ease;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+        }
+
+        .btn-primary:hover {
+            background: #000000;
+            border-color: #000000;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>System Design Hub</h1>
+            <p>Your collection of system design documentation</p>
+        </header>
+
+        <div class="apps-grid" id="appsGrid"></div>
+    </div>
+
+    <div class="add-app-btn" onclick="openModal()">+</div>
+
+    <div class="modal" id="addAppModal">
+        <div class="modal-content">
+            <h3>Add New Application</h3>
+            <input type="text" id="appNameInput" placeholder="Application Name (e.g., LinkedIn)">
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="addApp()">Add Application</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const APPS_KEY = 'systemDesignApps';
+        
+        const designTypes = [
+            { name: 'Flow Chart', icon: 'M4 6h16M4 12h16M4 18h16', file: 'flowchart' },
+            { name: 'Architecture', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', file: 'architecture' },
+            { name: 'Low Level Design', icon: 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', file: 'low-level' },
+            { name: 'High Level Design', icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z', file: 'high-level' }
+        ];
+
+        function loadApps() {
+            const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '["LinkedIn", "Twitter", "Instagram"]');
+            renderApps(apps);
+        }
+
+        function renderApps(apps) {
+            const grid = document.getElementById('appsGrid');
+            grid.innerHTML = apps.map(app => createAppCard(app)).join('');
+        }
+
+        function createAppCard(appName) {
+            const appSlug = appName.toLowerCase().replace(/\s+/g, '-');
+            const links = designTypes.map(design => `
+                <a href="apps/${appSlug}/${design.file}.html" class="design-link">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${design.icon}"></path>
+                    </svg>
+                    ${design.name}
+                </a>
+            `).join('');
+
+            return `
+                <div class="app-card">
+                    <h2>${appName}</h2>
+                    <div class="design-links">
+                        ${links}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openModal() {
+            document.getElementById('addAppModal').classList.add('active');
+            document.getElementById('appNameInput').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('addAppModal').classList.remove('active');
+            document.getElementById('appNameInput').value = '';
+        }
+
+        function addApp() {
+            const input = document.getElementById('appNameInput');
+            const appName = input.value.trim();
+            
+            if (appName) {
+                const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '[]');
+                if (!apps.includes(appName)) {
+                    apps.push(appName);
+                    localStorage.setItem(APPS_KEY, JSON.stringify(apps));
+                    renderApps(apps);
+                    generateAppFiles(appName);
+                }
+                closeModal();
+            }
+        }
+
+        function generateAppFiles(appName) {
+            const appSlug = appName.toLowerCase().replace(/\s+/g, '-');
+            console.log(`
+Files to create for ${appName}:
+- apps/${appSlug}/flowchart.html
+- apps/${appSlug}/architecture.html
+- apps/${appSlug}/low-level.html
+- apps/${appSlug}/high-level.html
+
+You can use the template from the next artifact to create these files.
+            `);
+        }
+
+        document.getElementById('appNameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addApp();
+        });
+
+        loadApps();
+    </script>
+</body>
+</html>
