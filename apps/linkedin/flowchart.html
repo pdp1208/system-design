@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn - Flow Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        .navbar {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar a {
+            color: #1a1a1a;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar a:hover {
+            opacity: 0.6;
+        }
+
+        .navbar h1 {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-section {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-section h2 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .design-content {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .design-content h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+            font-weight: 600;
+        }
+
+        .design-content section {
+            margin-bottom: 30px;
+        }
+
+        .design-content ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .design-content pre {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .design-content code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1a1a1a;
+        }
+
+        .placeholder {
+            background: #fafafa;
+            border: 2px dashed #e5e5e5;
+            border-radius: 8px;
+            padding: 60px;
+            text-align: center;
+            color: #999;
+            margin: 20px 0;
+        }
+
+        .placeholder h4 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../../index.html">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Hub
+        </a>
+        <h1>LinkedIn - Flow Chart</h1>
+        <div></div>
+    </nav>
+
+    <div class="content">
+        <div class="header-section">
+            <h2>Flow Chart</h2>
+            <p>Visual representation of the system's workflow and data flow processes.</p>
+        </div>
+
+        <div class="design-content">
+            <section>
+                <h3>User Authentication Flow</h3>
+                <div class="placeholder">
+                    <h4>Add your flow chart content here</h4>
+                    <p>You can use Mermaid, draw.io exports, or any visualization tool</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>Example: Login Process</h3>
+                <pre><code>User → Login Page → Enter Credentials → Validate
+    ↓
+    → Authentication Service → Check Database
+    ↓
+    → Generate Token → Return to User → Redirect to Dashboard</code></pre>
+            </section>
+
+            <section>
+                <h3>Key Components</h3>
+                <ul>
+                    <li>Entry points and user actions</li>
+                    <li>Processing steps and decision nodes</li>
+                    <li>Data transformations</li>
+                    <li>Output and error handling paths</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
